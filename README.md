@@ -26,9 +26,9 @@ The typical docker line would be:
 ```
 # Run and view output, exit with Ctrl+c, this will create a user "testing" with password "testing" 
 # as well as expose ports 22 and 4444
-sudo docker run --rm -it -e "USERNAME=testing" -e "PASSWORD=testing" -p 22:22 -p 4444:4444 sshaft:local
+sudo docker run --rm -it -e "USERNAME=testing" -e "PASSWORD=testing" -p 22:22 -p 4444:4444 cablethief/sshaft:latest
 # If you do not want to bother with exposing ports you may use your hosts adapter
-sudo docker run --rm -it -e "USERNAME=testing" -e "PASSWORD=testing" --network host sshaft:local
+sudo docker run --rm -it -e "USERNAME=testing" -e "PASSWORD=testing" --network host cablethief/sshaft:latest
 ```
 
 And using the provided compose file:
