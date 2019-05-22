@@ -108,7 +108,7 @@ version: '3'
 
 services:
   sshaft:
-    image: Cablethief/sshaft
+    image: cablethief/sshaft
     container_name: sshaft
     # If you are lazy and don't know what ports you want to forward at the moment.
     # network_mode: host
