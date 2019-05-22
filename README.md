@@ -73,7 +73,7 @@ ENABLE_IPV6=true
 
 ## IPv6 Nonsense 
 
-Docker [disables ipv6](https://docs.docker.com/v17.09/engine/userguide/networking/default_network/ipv6/) by default and this makes sshd upset which prevented forwarding without network_mode host. By disabling ipv6 in sshd this problem is fixed, a environment flag (`ENABLE_IPV6=true`) is provided to disable this behavior however [further flags](https://docs.docker.com/v17.09/engine/userguide/networking/default_network/ipv6/#how-ipv6-works-on-docker) need to be set when starting the docker daemon.
+Docker [disables ipv6](https://docs.docker.com/v17.09/engine/userguide/networking/default_network/ipv6/) by default and this makes sshd upset which prevented forwarding without `network_mode host`. By disabling ipv6 in sshd this problem is fixed, a environment flag (`ENABLE_IPV6=true`) is provided to disable this behavior however [further flags](https://docs.docker.com/v17.09/engine/userguide/networking/default_network/ipv6/#how-ipv6-works-on-docker) need to be set when starting the docker daemon.
 
 
 ## SSH Port Forwarding Basics
@@ -121,7 +121,7 @@ services:
       - PASSWORD=testing 
       # - ROOT_PASSWORD=Testing 
       # - SSH_PORT=22
-      #Wwithout the `ENABLE_SHELL=true` environment variable set SSH clients should use the `-N` flag to not request a shell
+      # Without the `ENABLE_SHELL=true` environment variable set SSH clients should use the `-N` flag to not request a shell
       # - ENABLE_SHELL=true
       # Ensure you start your docker daemon with the --ipv6 and maybe --fixed-cidr-v6
       # https://docs.docker.com/v17.09/engine/userguide/networking/default_network/ipv6/#how-ipv6-works-on-docker
