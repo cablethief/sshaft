@@ -2,6 +2,9 @@
 
 A quick [sshd](https://www.openssh.com/) server for reverse tunneling.
 
+Also available on Dockerhub:
+https://hub.docker.com/r/cablethief/sshaft
+
 ## Overview
 
 Sometimes for whatever reason it is convenient to have a sshd server quickly available to do tunneling to get between networks etc. This docker image provides a way to create a low privilege user and allow port forwarding.
