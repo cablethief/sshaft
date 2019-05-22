@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  sshaft:
+    image: Cablethief/sshaft
+    container_name: sshaft
+    # If you are lazy and don't know what ports you want to forward at the moment.
+    # network_mode: host
+    # Port mappings:
+    ports:
+      # Always give sub 60 port mappings as strings "https://docs.docker.com/compose/compose-file/"
+      - "22:22"
+      - "4444:4444"
+    environment:
+      - USERNAME=testing 
+      - PASSWORD=testing 
+      # - ROOT_PASSWORD=Testing 
+      # - SSH_PORT=22
+      # - ENABLE_SHELL=true
+      # Ensure you start your docker daemon with the --ipv6 and maybe --fixed-cidr-v6
+      # https://docs.docker.com/v17.09/engine/userguide/networking/default_network/ipv6/#how-ipv6-works-on-docker
+      # - ENABLE_IPV6=true
