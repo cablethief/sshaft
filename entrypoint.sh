@@ -4,9 +4,9 @@
 ssh-keygen -A
 
 # Supported Enviroment Variables.
-# USERNAME=testing 
-# PASSWORD=testing 
-# ROOT_PASSWORD=Testing 
+# USERNAME=testing
+# PASSWORD=testing
+# ROOT_PASSWORD=Testing
 # SSH_PORT=22
 # ENABLE_SHELL=true
 # ENABLE_IPV6=true
@@ -45,7 +45,7 @@ if [[ -n "${USERNAME}" ]] && [[ -n "${PASSWORD}" ]] ; then
     echo "Please bare in mind normal users cannot bind to ports lower than 1024"
     if [[ ! "${ENABLE_SHELL}" = "true" ]] ; then
         adduser -S "${USERNAME}"
-    else 
+    else
         adduser -s "/bin/sh" -S "${USERNAME}"
     fi
     echo "${USERNAME}:${PASSWORD}" | chpasswd

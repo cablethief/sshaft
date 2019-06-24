@@ -99,7 +99,8 @@ C:\ cmd.exe /c echo y | .\plink.exe -N -pw testing root@<your host running this 
 
 ## Future work
 
-Add [rpivot](https://github.com/klsecservices/rpivot) and environment flags to enable it for reverse dynamic port forwards. 
+ - Add [rpivot](https://github.com/klsecservices/rpivot) and environment flags to enable it for reverse dynamic port forwards. 
+ - Maybe add a honey pot flag to view passwords tried against the server.
 
 ## Compose file example
 
