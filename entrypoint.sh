@@ -6,14 +6,20 @@ ssh-keygen -A
 # Supported Enviroment Variables.
 # USERNAME=testing
 # PASSWORD=testing
+# USER_SSHKEY=YOUR_PUBLIC_KEY
 # ROOT_PASSWORD=Testing
 # SSH_PORT=22
 # ENABLE_SHELL=true
 # ENABLE_IPV6=true
+# ROOT_SSHKEY=YOUR_PUBLIC_KEY
+# Requires ‐‐cap‐add=NET_ADMIN
+# VPN=true
 
 # Allow users to bind to all the dockers interfaces.
 sed -i "s/GatewayPorts no/GatewayPorts yes/" /etc/ssh/sshd_config
 sed -i "s/AllowTcpForwarding no/AllowTcpForwarding yes/" /etc/ssh/sshd_config
+sed -i "s/#PermitTunnel no/PermitTunnel yes/" /etc/ssh/sshd_config
+#PermitTunnel no
 #GatewayPorts no
 
 # Make sure we only listen on ipv6 else port forwards in docker get a bit wonkey
@@ -33,6 +39,12 @@ if [[ -n "${ROOT_PASSWORD}" ]] ; then
     echo "Root user enabled, using the password: ${ROOT_PASSWORD}."
     sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
     echo "root:${ROOT_PASSWORD}" | chpasswd
+fi
+
+if [[ -n "${ROOT_SSHKEY}" ]] ; then
+    echo "Root user enabled, using the key: ${ROOT_SSHKEY}."
+    sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
+    echo "${ROOT_SSHKEY}" >> /root/.ssh/authorized_keys
 fi
 
 if [[ -n "${SSH_PORT}" ]] ; then
