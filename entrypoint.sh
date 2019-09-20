@@ -44,6 +44,7 @@ fi
 if [[ -n "${ROOT_SSHKEY}" ]] ; then
     echo "Root user enabled, using the key: ${ROOT_SSHKEY}."
     sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
+    mkdir /root/.ssh
     echo "${ROOT_SSHKEY}" >> /root/.ssh/authorized_keys
 fi
 
