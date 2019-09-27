@@ -35,18 +35,22 @@ if [[ ! "${ENABLE_SHELL}" = "true" ]] ; then
     echo "If you want a shell use the enviromental variable 'ENABLE_SHELL=true'"
 fi
 
-if [[ -n "${ROOT_PASSWORD}" ]] ; then
-    echo "Root user enabled, using the password: ${ROOT_PASSWORD}."
-    sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
-    echo "root:${ROOT_PASSWORD}" | chpasswd
-fi
+
 
 if [[ -n "${ROOT_SSHKEY}" ]] ; then
     echo "Root user enabled, using the key: ${ROOT_SSHKEY}."
-    sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
+    sed -i "s/#PermitRootLogin.*/PermitRootLogin prohibit-password/" /etc/ssh/sshd_config
     sed -i "s/#PubkeyAuthentication.*/PubkeyAuthentication yes/" /etc/ssh/sshd_config
+    echo "root:$(uuidgen)" | chpasswd
     mkdir /root/.ssh
     echo "${ROOT_SSHKEY}" >> /root/.ssh/authorized_keys
+fi
+
+if [[ -n "${ROOT_PASSWORD}" ]] ; then
+    echo "Root user enabled, using the password: ${ROOT_PASSWORD}."
+    sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
+    sed -i "s/PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config
+    echo "root:${ROOT_PASSWORD}" | chpasswd
 fi
 
 if [[ -n "${SSH_PORT}" ]] ; then
