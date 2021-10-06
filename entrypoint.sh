@@ -10,6 +10,7 @@ ssh-keygen -A
 # SSH_PORT=22
 # ENABLE_SHELL=true
 # ENABLE_IPV6=true
+# PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAVjqZUJsFB3+97PGoyuDreXu6o9YBUXkFcr8Sl6FQ5w system@Microburst"
 
 # Allow users to bind to all the dockers interfaces.
 sed -i "s/GatewayPorts no/GatewayPorts yes/" /etc/ssh/sshd_config
@@ -33,6 +34,13 @@ if [[ -n "${ROOT_PASSWORD}" ]] ; then
     echo "Root user enabled, using the password: ${ROOT_PASSWORD}."
     sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
     echo "root:${ROOT_PASSWORD}" | chpasswd
+    if [[ -n "${PUBKEY}" ]]; then
+        echo "Adding public key to root user: ${PUBKEY}"
+        mkdir -p /root/.ssh
+        echo "${PUBKEY}" >> /root/.ssh/authorized_keys
+        # chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.ssh/authorized_keys
+        # chmod 644 /etc/ssh/authorized_keys
+    fi
 fi
 
 if [[ -n "${SSH_PORT}" ]] ; then
@@ -47,6 +55,13 @@ if [[ -n "${USERNAME}" ]] && [[ -n "${PASSWORD}" ]] ; then
         adduser -S "${USERNAME}"
     else
         adduser -s "/bin/sh" -S "${USERNAME}"
+    fi
+    if [[ -n "${PUBKEY}" ]]; then
+        echo "Adding public key: ${PUBKEY}"
+        mkdir -p /home/${USERNAME}/.ssh
+        echo ${PUBKEY} >> /home/${USERNAME}/.ssh/authorized_keys
+        # chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.ssh/authorized_keys
+        # chmod 644 /etc/ssh/authorized_keys
     fi
     echo "${USERNAME}:${PASSWORD}" | chpasswd
 fi

@@ -71,6 +71,12 @@ Docker does not use IPv6 without starting the daemon with [special flags](https:
 ENABLE_IPV6=true
 ```
 
+Allow use of a private/pub key auth. 
+
+```
+PUBKEY="ssh-ed25519 AAAAC3NzaC1XXXXXXXXXXXXXXXXtXCLGHx Me"
+```
+
 ## IPv6 Nonsense 
 
 Docker [disables ipv6](https://docs.docker.com/v17.09/engine/userguide/networking/default_network/ipv6/) by default and this makes sshd upset which prevented forwarding without `network_mode host`. By disabling ipv6 in sshd this problem is fixed, a environment flag (`ENABLE_IPV6=true`) is provided to disable this behavior however [further flags](https://docs.docker.com/v17.09/engine/userguide/networking/default_network/ipv6/#how-ipv6-works-on-docker) need to be set when starting the docker daemon.
