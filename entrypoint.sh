@@ -7,10 +7,11 @@ ssh-keygen -A
 # USERNAME=testing
 # PASSWORD=testing
 # ROOT_PASSWORD=Testing
+# ROOT_PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAVjqZUJsFB3+97PGoyuDreXu6o9YBUXkFcr8Sl6FQ5w system"
 # SSH_PORT=22
 # ENABLE_SHELL=true
 # ENABLE_IPV6=true
-# PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAVjqZUJsFB3+97PGoyuDreXu6o9YBUXkFcr8Sl6FQ5w system@Microburst"
+# PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAVjqZUJsFB3+97PGoyuDreXu6o9YBUXkFcr8Sl6FQ5w system"
 
 # Allow users to bind to all the dockers interfaces.
 sed -i "s/GatewayPorts no/GatewayPorts yes/" /etc/ssh/sshd_config
@@ -34,12 +35,19 @@ if [[ -n "${ROOT_PASSWORD}" ]] ; then
     echo "Root user enabled, using the password: ${ROOT_PASSWORD}."
     sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
     echo "root:${ROOT_PASSWORD}" | chpasswd
-    if [[ -n "${PUBKEY}" ]]; then
-        echo "Adding public key to root user: ${PUBKEY}"
-        mkdir -p /root/.ssh
-        echo "${PUBKEY}" >> /root/.ssh/authorized_keys
-        # chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.ssh/authorized_keys
-        # chmod 644 /etc/ssh/authorized_keys
+fi
+
+if [[ -n "${ROOT_PUBKEY}" ]]; then
+    echo "Adding public key to root user: ${ROOT_PUBKEY}"
+    sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
+    mkdir -p /root/.ssh
+    echo "${ROOT_PUBKEY}" >> /root/.ssh/authorized_keys
+
+    if [[ -z "${ROOT_PASSWORD}" ]]; then
+        ROOT_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1)
+        echo "Setting a password to enable the root user so randomly generating one..."
+        echo "Root user enabled, using the password: ${ROOT_PASSWORD}"
+        echo "root:${ROOT_PASSWORD}" | chpasswd
     fi
 fi
 
@@ -48,9 +56,10 @@ if [[ -n "${SSH_PORT}" ]] ; then
     sed -i "s/#Port.*/Port ${SSH_PORT}/" /etc/ssh/sshd_config
 fi
 
-if [[ -n "${USERNAME}" ]] && [[ -n "${PASSWORD}" ]] ; then
-    echo "Creating user ${USERNAME} with password ${PASSWORD}"
-    echo "Please bare in mind normal users cannot bind to ports lower than 1024"
+if [[ -n "${USERNAME}" ]]; then
+    echo "Creating user: ${USERNAME}"
+    echo "Please keep in mind normal users cannot bind to ports lower than 1024"
+    echo "If your kernel is recent enough you may try '--sysctl net.ipv4.ip_unprivileged_port_start=0' with docker to allow it"
     if [[ ! "${ENABLE_SHELL}" = "true" ]] ; then
         adduser -S "${USERNAME}"
     else
@@ -60,10 +69,11 @@ if [[ -n "${USERNAME}" ]] && [[ -n "${PASSWORD}" ]] ; then
         echo "Adding public key: ${PUBKEY}"
         mkdir -p /home/${USERNAME}/.ssh
         echo ${PUBKEY} >> /home/${USERNAME}/.ssh/authorized_keys
-        # chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.ssh/authorized_keys
-        # chmod 644 /etc/ssh/authorized_keys
     fi
-    echo "${USERNAME}:${PASSWORD}" | chpasswd
+    if [[ -n "${PASSWORD}" ]]; then
+        echo "Using password: ${PASSWORD}"
+        echo "${USERNAME}:${PASSWORD}" | chpasswd
+    fi
 fi
 
 # do not detach (-D), log to stderr (-e), passthrough other arguments

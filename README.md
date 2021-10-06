@@ -52,6 +52,10 @@ Use the root user and set the password, this allows for binding to lower ports.
 ```
 ROOT_PASSWORD=Testing
 ```
+or
+```
+ROOT_PUBKEY="ssh-ed25519 AAAAC3NzaC1XXXXXXXXXXXXXXXXtXCLGHx Me"
+```
 
 Set the sshd server port incase you want something other than 22
 ```
